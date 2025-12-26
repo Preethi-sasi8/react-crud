@@ -5,13 +5,36 @@ import './App.css';
 function App() {
 
    const [users,setusers] = useState([]);
-   const [name,setname] = useState([]);
-   const [email,setemail] = useState([]);
-   const [website,setwebsite] = useState([]);
+   const [name,setname] = useState("");
+   const [email,setemail] = useState("");
+   const [website,setwebsite] = useState("");
    useEffect(() => {
   fetch("https://jsonplaceholder.typicode.com/users").then(resp => resp.json()).then(data => setusers(data))}, []);
 
-
+   function adduser(){
+      const nam = name.trim();
+      const ema = email.trim();
+      const web = website.trim();
+      if(nam && ema &&web){
+        fetch("https://jsonplaceholder.typicode.com/users",
+          {
+            method : 'POST',
+            body : JSON.stringify({
+              name : nam,
+              email : ema,
+              website :web
+            }),
+            headers : {
+              "Content-Type" : "application/json"
+            }
+          }
+        ).then(response => response.json()).then(datas => setusers([...users,datas]))
+        alert("USER ADDED SUCESSFULLY..")
+        setname("")
+        setemail("")
+        setwebsite("")
+      }
+   }
   return (
     <div >
              <table>
@@ -36,7 +59,11 @@ function App() {
                 )}
               </tbody>
               <tfoot>
-                <td><input type="text" placeholder='enter name...' /></td>
+                <td></td>
+                <td><input type="text" placeholder='enter name...' value={name} onChange = {(e) => setname(e.target.value)} /></td>
+                <td><input type="text" placeholder='enter email...' value={email} onChange = {(e) => setemail(e.target.value)} /></td>
+                <td><input type="text" placeholder='enter website...' value={website}onChange = {(e) => setwebsite(e.target.value)}/></td>
+                <td><button onClick={adduser}>ADD USER</button></td>
               </tfoot>
              </table>
     </div>
