@@ -35,6 +35,27 @@ function App() {
         setwebsite("")
       }
    }
+   function onchangehandler(id,key,value){
+           setusers(users => { 
+            return  users.map(user =>{ return   user.id === id ?{...user, [key] :value}:user})
+           }
+           )
+    
+   }
+   function updateuser(id){
+    const user = users.find((user)=> user.id===id);
+        fetch(`https://jsonplaceholder.typicode.com/users/${id}`,
+          {
+            method : 'PUT',
+            body : JSON.stringify({user}),
+            headers : {
+              "Content-Type" : "application/json"
+            }
+          }
+        ).then(response => response.json()).then(datas => alert("USER UPDATED SUCESSFULLY.."))
+        
+      }
+   
   return (
     <div >
              <table>
@@ -50,10 +71,12 @@ function App() {
                 <tr key={user.id}>
                   <td>{user.id}</td>
                   <td>{user.name}</td>
-                  <td  contenteditable="true">{user.email}</td>
+                  <td  contenteditable="true" onChange={(e) => onchangehandler(user.id ,email,e.target.value)} >{user.email}</td>
                   <td  contenteditable="true">{user.website}</td>
                 <td>
-                 <button>UPDATE</button> 
+                 <button onClick={() => updateuser(user.id)} >UPDATE</button> </td>
+                 <br/>
+                 <td>
                  <button>DELETE</button> 
                   </td></tr>
                 )}
